@@ -12,7 +12,7 @@ To try the examples in Expo, please change `main` to `./node_modules/expo/AppEnt
 
 This package is forked from https://github.com/indiespirit/react-native-chart-kit. I've added the pressable bar graph functionality.
 
-1. `yarn add react-native-chart-kit-with-pressable-bar-graph`
+1. `yarn add react-native-chart-kit-with-pressable-stacked-bar`
    Just use this for the bar graph.
 
 We'll have the onDataPointClick - which will give us the x - will be the starting point , y - will be the starting point , index and value of the bar graph.

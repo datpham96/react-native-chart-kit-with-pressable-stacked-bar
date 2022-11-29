@@ -288,20 +288,19 @@ class ContributionGraph extends AbstractChart<
   }
 
   handleDayPress(index: number) {
-    if (!this.props.onDayPress) {
-      return;
-    }
-
-    this.props.onDayPress(
-      this.state.valueCache[index] && this.state.valueCache[index].value
-        ? this.state.valueCache[index].value
-        : {
-            [this.props.accessor]: 0,
-            date: new Date(
-              this.getStartDate().valueOf() + index * MILLISECONDS_IN_ONE_DAY
-            )
-          }
-    );
+    // if (!this.props.onDayPress) {
+    //   return;
+    // }
+    // this.props.onDayPress(
+    //   this.state.valueCache[index] && this.state.valueCache[index].value
+    //     ? this.state.valueCache[index].value
+    //     : {
+    //         [this.props.accessor]: 0,
+    //         date: new Date(
+    //           this.getStartDate().valueOf() + index * MILLISECONDS_IN_ONE_DAY
+    //         )
+    //       }
+    // );
   }
 
   renderWeek(weekIndex: number) {

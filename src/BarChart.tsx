@@ -106,13 +106,13 @@ class BarChart extends AbstractChart<BarChartProps, BarChartState> {
           return;
         }
 
-        onDataPointClick({
-          index: i,
-          value: x,
-          data,
-          x: cx,
-          y: cy
-        });
+        // onDataPointClick({
+        //   index: i,
+        //   value: x,
+        //   [],
+        //   x: cx,
+        //   y: cy
+        // });
       };
 
       return (

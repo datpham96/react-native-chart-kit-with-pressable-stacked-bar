@@ -1,6 +1,6 @@
 {
-  "name": "react-native-chart-kit-with-pressable-stacked-bar",
-  "version": "6.11.4",
+  "name": "react-native-chart-kit-bar",
+  "version": "6.11.4-fix",
   "devDependencies": {
     "@types/react": "^16.9.38",
     "@types/react-native": "^0.62.13",

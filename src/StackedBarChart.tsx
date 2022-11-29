@@ -50,6 +50,10 @@ export interface StackedBarChartProps extends AbstractChartProps {
 
   percentile?: boolean;
 
+  onPressBar?: (i: number, value: any) => string;
+
+  activeBar?: any;
+
   /**
    * Percentage of the chart height, dedicated to vertical labels
    * (space below chart)
@@ -76,6 +80,10 @@ class StackedBarChart extends AbstractChart<
       : 0;
   };
 
+  onPressBarFunc = (i: any, value: any) => {
+    this.props.onPressBar(i, value);
+  };
+
   renderBars = ({
     data,
     width,
@@ -99,45 +107,85 @@ class StackedBarChart extends AbstractChart<
     colors: string[];
     data: number[][];
   }) =>
-  data.map(function (x, i) {
-    var barWidth = 32 * this.getBarPercentage();
-    var ret = [];
-    var h = 0;
-    var st = paddingTop ;
-    var fac = 1;
-    if (stackedBar) {
+    data.map((x, i) => {
+      const barWidth = 32 * this.getBarPercentage();
+      const ret = [];
+      let h = 0;
+      let st = paddingTop;
+
+      let fac = 1;
+      if (stackedBar) {
         fac = 0.7;
-    }
-    var sum = this.props.percentile ? x.reduce(function (a, b) { return a + b; }, 0) : border;
-    var barsAreaHeight = height * verticalLabelsHeightPercentage;
-    for (var z = 0; z < x.length; z++) {
-        h = barsAreaHeight * (x[z] / sum);
-        var y = barsAreaHeight - h + st;
-        var xC = (paddingRight +
+      }
+      const sum = this.props.percentile ? x.reduce((a, b) => a + b, 0) : border;
+      const barsAreaHeight = height * verticalLabelsHeightPercentage;
+      const item = (i: any, z: any, xC: any, y: any, x: any, h: any) => {
+        return (
+          <G onPress={() => this.onPressBarFunc(i, z)} key={Math.random()}>
+            <Rect
+              key={Math.random()}
+              x={xC}
+              y={y}
+              rx={this.getBarRadius(ret, x)}
+              ry={this.getBarRadius(ret, x)}
+              width={barWidth}
+              height={h}
+              fill={colors[z]}
+            />
+            {this.props.activeBar === i + "_" + z && (
+              <Circle
+                cx={xC + barWidth / 2}
+                cy={z === 1 ? y + 3 : y + 6}
+                r={barWidth * 0.5}
+                stroke="white"
+                strokeWidth="2"
+                fill={colors[z]}
+              />
+            )}
+            {this.props.activeBar === i + "_" + z && (
+              <Text
+                key={Math.random()}
+                x={z === 1 ? xC + barWidth / 2 : xC + barWidth + 13}
+                y={z === 1 ? y - 10 : y + 5}
+                {...this.getPropsForLabels()}
+                fill="white"
+                fontSize={10}
+              >
+                {x[z] + "%"}
+              </Text>
+            )}
+          </G>
+        );
+      };
+      for (let z = 0; z < x.length; z++) {
+        h = barsAreaHeight * (x[z] / sum > 0 ? x[z] / sum : 0);
+        const y = barsAreaHeight - h + st;
+        const xC =
+          (paddingRight +
             (i * (width - paddingRight)) / data.length +
             barWidth / 2) *
-            fac;
-            let zVal = z;
-        ret.push(
-            <G onPress={() => this.props.onPressBar(i, zVal)} key={Math.random()}>
-                <Rect key={Math.random()} x={xC} y={y} rx={this.getBarRadius(ret, x)} ry={this.getBarRadius(ret, x)} width={barWidth} height={h} fill={colors[z]}/>
+          fac;
+        ret.push(item(i, z, xC, y, x, h));
 
-                {this.props.activeBar === i + '_' + zVal && <Circle  cx={xC + barWidth / 2} cy={z === 1 ? y + 3 : y + 6} r={barWidth * 0.5} stroke="white" strokeWidth="2" fill={colors[z]} />}
-
-                {this.props.activeBar === i + '_' + zVal && <Text key={Math.random()} x={zVal === 1 ? xC + barWidth / 2 : xC + barWidth + 13} textAnchor="center" y={zVal === 1 ? y - 10 : y + 5} {...this.getPropsForLabels()} fill='white' fontSize={10}>
-                    {x[z] + '%'}
-                </Text>}
-            </G>
-        );
         if (!this.props.hideLegend) {
-            ret.push(<Text key={Math.random()} x={xC + 7 + barWidth / 2} textAnchor="end" y={h > 15 ? y + 15 : y + 7} {...this.getPropsForLabels()}>
-                {x[z]}
-            </Text>);
+          ret.push(
+            <Text
+              key={Math.random()}
+              x={xC + 7 + barWidth / 2}
+              textAnchor="end"
+              y={h > 15 ? y + 15 : y + 7}
+              {...this.getPropsForLabels()}
+            >
+              {x[z]}
+            </Text>
+          );
         }
+
         st -= h;
-    }
-    return ret;
-});
+      }
+
+      return ret;
+    });
 
   renderLegend = ({
     legend,
@@ -172,7 +220,7 @@ class StackedBarChart extends AbstractChart<
     });
 
   render() {
-    const paddingTop = 15;
+    const paddingTop = 35;
     const paddingRight = 50;
     const barWidth = 32 * this.getBarPercentage();
 
@@ -259,7 +307,7 @@ class StackedBarChart extends AbstractChart<
               ? this.renderVerticalLabels({
                   ...config,
                   labels: data.labels,
-                  paddingRight: paddingRight + 28,
+                  paddingRight: paddingRight - 10,
                   stackedBar,
                   paddingTop,
                   horizontalOffset: barWidth,
@@ -274,7 +322,7 @@ class StackedBarChart extends AbstractChart<
               border,
               colors: this.props.data.barColors,
               paddingTop,
-              paddingRight: paddingRight + 20,
+              paddingRight: paddingRight - 10,
               stackedBar,
               verticalLabelsHeightPercentage
             })}
