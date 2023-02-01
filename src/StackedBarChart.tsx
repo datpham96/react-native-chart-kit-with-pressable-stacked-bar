@@ -151,7 +151,7 @@ class StackedBarChart extends AbstractChart<
                 fill="white"
                 fontSize={10}
               >
-                {x[z] + "%"}
+                {x[z].toFixed(0) + "%"}
               </Text>
             )}
           </G>
